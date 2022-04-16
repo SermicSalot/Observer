@@ -12,7 +12,7 @@ const maxUserThreshold = 4000;
 const saveThreshold = 5000;
 const rollCommands = [`ha`, `hg`, `hx`, `mx`, `ma`, `mk`,`wa`, `wg`, `wx`,];
 let userList = userData;
-let charList = charData
+let charList = charData;
 
 client.once(`ready`, () => {
     console.log(`Ready!`);
@@ -189,7 +189,7 @@ function updatePlayerThresholds() {
 for (let user of userList.Users) {
     if (user.threshold > maxUserThreshold) {
         user.threshold = maxUserThreshold;
-        client.users.send(user.id, `Your threshold was higher than the minimum threshold and has been adjusted to ${maxUserThreshold}. This is most likely because the minimum threshold was changed recently.`);
+        client.users.send(user.id, `Your threshold was higher than the maximum threshold and has been adjusted to ${maxUserThreshold}. This is most likely because the maximum threshold was lowered recently.`);
     }
 }
 fs.writeFileSync('./UserList.json', JSON.stringify(userList, null, 4));

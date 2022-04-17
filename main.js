@@ -72,13 +72,14 @@ client.on(`messageCreate`, msg => {
                     if (user.id === msg.interaction.user.id) {
                         charList.Characters.forEach(character => {
                             if (character.name === name) {
-                                let newDate = new Date(character.timeStamp)
-                                client.users.send(user.id, `${name}\nRank: ${character.rank}\nLast Updated: ${newDate.getMonth() + 1}/${newDate.getDate()}/${newDate.getFullYear()}`);
-                            }
+                                if (character.rank <= user.threshold) {
+                                    let newDate = new Date(character.timeStamp)
+                                    client.users.send(user.id, `${name}\nRank: ${character.rank}\nLast Updated: ${newDate.getMonth() + 1}/${newDate.getDate()}/${newDate.getFullYear()}`);
+                               }
+                            }   
                         });
                     }
-                })
-                
+                });  
             }
         }
     }

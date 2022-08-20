@@ -1,8 +1,14 @@
 const { token } = require(`./config.json`);
-const userData = require(`./UserList.json`);
-const charData = require(`./CharList.json`);
 const { Client } = require(`discord.js`);
 const fs = require(`fs`);
+if (!fs.existsSync(`./UserList.json`)) {
+    fs.writeFileSync(`./UserList.json`, `{"Users": []}`)
+}
+const userData = require(`./UserList.json`);
+if (!fs.existsSync(`./CharList.json`)) {
+    fs.writeFileSync(`./CharList.json`, `{"Characters": []}`)
+}
+const charData = require(`./CharList.json`);
 const client = new Client({
     intents: [`GUILDS`, `GUILD_MESSAGES`, `DIRECT_MESSAGES`],
     partials: [`CHANNEL`]
@@ -10,7 +16,7 @@ const client = new Client({
 const defaultThreshold = 2000;
 const maxUserThreshold = 4000;
 const saveThreshold = 5000;
-const rollCommands = [`ha`, `hg`, `hx`, `mx`, `ma`, `mk`,`wa`, `wg`, `wx`,];
+const rollCommands = [`ha`, `hg`, `hx`, `mx`, `ma`, `mk`,`wa`, `wg`, `wx`];
 let userList = userData;
 let charList = charData;
 
@@ -18,6 +24,10 @@ client.once(`ready`, () => {
     console.log(`Ready!`);
     updatePlayerThresholds();
     updateCharacterList();
+    client.user.setPresence({
+        status: `online`,
+        activities: [{name: `👀`, type: `WATCHING`}]
+    });
 });
 
 client.login(token);
@@ -187,13 +197,13 @@ client.on(`messageUpdate`, (oldMsg, newMsg) => {
 });
 /**Updates Player Thresholds if maxThreshold is made smaller*/
 function updatePlayerThresholds() {
-for (let user of userList.Users) {
-    if (user.threshold > maxUserThreshold) {
-        user.threshold = maxUserThreshold;
-        client.users.send(user.id, `Your threshold was higher than the maximum threshold and has been adjusted to ${maxUserThreshold}. This is most likely because the maximum threshold was lowered recently.`);
+    for (let user of userList.Users) {
+        if (user.threshold > maxUserThreshold) {
+            user.threshold = maxUserThreshold;
+            client.users.send(user.id, `Your threshold was higher than the maximum threshold and has been adjusted to ${maxUserThreshold}. This is most likely because the maximum threshold was lowered recently.`);
+        }
     }
-}
-fs.writeFileSync('./UserList.json', JSON.stringify(userList, null, 4));
+    fs.writeFileSync('./UserList.json', JSON.stringify(userList, null, 4));
 }
 /**Prunes the Character List in case the save threshold is made smaller*/
 function updateCharacterList() {
